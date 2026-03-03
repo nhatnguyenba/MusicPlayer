@@ -43,6 +43,26 @@ dependencies {
 
     implementation("androidx.compose.material:material-icons-extended:1.7.5")
 
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    implementation("androidx.compose.material3:material3:1.2.0")
+
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+
+    // Media3
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-session:1.2.1")
+
+    // Hilt
+//    implementation("com.google.dagger:hilt-android:2.48")
+//    kapt("com.google.dagger:hilt-compiler:2.48")
+//    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
