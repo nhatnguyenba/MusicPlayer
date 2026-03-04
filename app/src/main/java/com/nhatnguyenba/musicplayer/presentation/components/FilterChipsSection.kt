@@ -18,9 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FilterChipsSection() {
+fun FilterChipsSection(chips: List<String>) {
 
-    val chips = listOf("All", "New Release", "Trending", "Top")
     var selected by remember { mutableStateOf("All") }
 
     LazyRow {

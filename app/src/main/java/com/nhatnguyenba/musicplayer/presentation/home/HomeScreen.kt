@@ -13,14 +13,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.nhatnguyenba.musicplayer.presentation.components.CuratedSection
 import com.nhatnguyenba.musicplayer.presentation.components.FilterChipsSection
 import com.nhatnguyenba.musicplayer.presentation.components.HeaderSection
 import com.nhatnguyenba.musicplayer.presentation.components.TopDailySection
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    hazeState: HazeState
+) {
 
     Box(
         modifier = Modifier
@@ -39,6 +46,7 @@ fun HomeScreen() {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
+                .hazeSource(hazeState)
                 .padding(horizontal = 20.dp),
             contentPadding = PaddingValues(bottom = 120.dp)
         ) {
@@ -49,7 +57,7 @@ fun HomeScreen() {
 
             item { Spacer(Modifier.height(24.dp)) }
 
-            item { FilterChipsSection() }
+            item { FilterChipsSection(chips = listOf("All", "New Release", "Trending", "Top")) }
 
             item { Spacer(Modifier.height(32.dp)) }
 
@@ -57,7 +65,7 @@ fun HomeScreen() {
 
             item { Spacer(Modifier.height(32.dp)) }
 
-            item { TopDailySection() }
+            item { TopDailySection(viewModel) }
         }
     }
 }

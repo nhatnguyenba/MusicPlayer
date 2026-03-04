@@ -27,8 +27,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun GlassBottomBar(modifier: Modifier, navController: NavHostController) {
-
+fun GlassBottomBar(
+    modifier: Modifier, navController: NavHostController
+) {
     val items = listOf(
         Screen.Home,
         Screen.Search,
@@ -41,9 +42,6 @@ fun GlassBottomBar(modifier: Modifier, navController: NavHostController) {
 
     Box(
         modifier = modifier
-            .padding(20.dp)
-            .clip(RoundedCornerShape(40.dp))
-            .background(Color.White.copy(alpha = 0.08f))
             .fillMaxWidth()
             .height(70.dp)
     ) {
@@ -102,6 +100,9 @@ fun GlassBottomBarPreview() {
             .padding(bottom = 16.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
-        GlassBottomBar(Modifier.align(Alignment.BottomCenter), navController = navController)
+        GlassBottomBar(
+            Modifier.align(Alignment.BottomCenter),
+            navController = navController
+        )
     }
 }

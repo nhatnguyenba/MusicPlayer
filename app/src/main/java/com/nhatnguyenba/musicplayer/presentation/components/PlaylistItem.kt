@@ -23,9 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.nhatnguyenba.musicplayer.domain.models.Playlist
 
 @Composable
-fun PlaylistItem() {
+fun PlaylistItem(
+    playlist: Playlist
+) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -33,7 +36,7 @@ fun PlaylistItem() {
     ) {
 
         AsyncImage(
-            model = "https://images.unsplash.com/photo-1492724441997-5dc865305da7",
+            model = playlist.imageUrl,
             contentDescription = null,
             modifier = Modifier
                 .size(64.dp)
@@ -45,13 +48,13 @@ fun PlaylistItem() {
         Column(modifier = Modifier.weight(1f)) {
 
             Text(
-                "Starlit Reverie",
+                playlist.title,
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold
             )
 
             Text(
-                "By Budiarti • 8 Songs",
+                "By ${playlist.author} • ${playlist.numberOfTracks} Songs",
                 color = Color.Gray,
                 fontSize = 13.sp
             )
