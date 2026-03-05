@@ -29,7 +29,7 @@ fun TrackDto.toDomain(): Song = Song(
     id = this.id,
     title = this.title,
     artist = this.artist.name,
-    imageUrl = this.album.coverMedium,
+    imageUrl = this.album.coverBig,
     playBackUrl = this.preview
 )
 

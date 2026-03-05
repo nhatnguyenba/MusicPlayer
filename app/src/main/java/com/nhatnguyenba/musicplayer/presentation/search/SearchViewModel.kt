@@ -37,8 +37,13 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState<SearchResult>> = _uiState
 
-    private var currentQuery = ""
-    private var currentFilter = SearchFilter.SONGS
+    private val _currentQuery: MutableStateFlow<String> =
+        MutableStateFlow("")
+    val currentQuery: StateFlow<String> = _currentQuery
+
+    private val _currentFilter: MutableStateFlow<SearchFilter> =
+        MutableStateFlow(SearchFilter.SONGS)
+    val currentFilter: StateFlow<SearchFilter> = _currentFilter
 
     private var scope = CoroutineScope(Dispatchers.IO)
 
@@ -47,7 +52,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onQueryChange(query: String) {
-        currentQuery = query
+        _currentQuery.value = query
 
         if (query.isBlank()) {
             loadGenres()
@@ -57,10 +62,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun onFilterChange(filter: SearchFilter) {
-        currentFilter = filter
+        _currentFilter.value = filter
 
-        if (currentQuery.isNotBlank()) {
-            search(currentQuery)
+        if (currentQuery.value.isNotBlank()) {
+            search(currentQuery.value)
         }
     }
 
@@ -89,7 +94,7 @@ class SearchViewModel @Inject constructor(
             scope.launch {
                 _uiState.value = UiState.Loading
 
-                when (currentFilter) {
+                when (currentFilter.value) {
 
                     SearchFilter.SONGS -> {
                         searchSongsUseCase(query).collect { songs ->

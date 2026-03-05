@@ -9,29 +9,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QueueMusic
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -43,11 +41,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nhatnguyenba.musicplayer.domain.models.Song
+import com.nhatnguyenba.musicplayer.presentation.components.MusicSlider
+import com.nhatnguyenba.musicplayer.presentation.components.Screen
+import java.util.Locale
 
 @Composable
 fun PlayingScreen(
+    navController: NavController,
     modifier: Modifier = Modifier,
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
@@ -63,7 +66,7 @@ fun PlayingScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(80.dp)
+                    .blur(20.dp)
             )
 
             // Dark overlay
@@ -80,42 +83,65 @@ fun PlayingScreen(
                     )
             )
 
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .statusBarsPadding(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .statusBarsPadding()
+                    .navigationBarsPadding(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                TopBar()
+                item {
+                    TopBar(navController = navController)
+                }
 
-                Spacer(Modifier.height(40.dp))
+                item {
+                    Spacer(Modifier.height(35.dp))
+                }
 
-                Artwork(it.imageUrl)
+                item {
+                    Artwork(it.imageUrl)
+                }
 
-                Spacer(Modifier.height(32.dp))
+                item {
+                    Spacer(Modifier.height(27.dp))
+                }
 
-                SongInfo(it)
+                item {
+                    SongInfo(it)
+                }
 
-                Spacer(Modifier.height(24.dp))
+                item {
+                    Spacer(Modifier.height(24.dp))
+                }
 
-                LyricsPreview()
+                item {
+                    LyricsPreview()
+                }
 
-                Spacer(Modifier.height(40.dp))
+                item {
+                    Spacer(Modifier.height(40.dp))
+                }
 
-                ProgressSection()
+                item {
+                    ProgressSection(playerViewModel)
+                }
 
-                Spacer(Modifier.height(32.dp))
+                item {
+                    Spacer(Modifier.height(27.dp))
+                }
 
-                PlayerControls()
+                item {
+                    PlayerControls(playerViewModel)
+                }
             }
         }
     }
 }
 
 @Composable
-fun TopBar() {
+fun TopBar(navController: NavController) {
 
     Row(
         Modifier
@@ -124,7 +150,7 @@ fun TopBar() {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = { navController.navigate(Screen.Search.route) }) {
             Icon(
                 Icons.Default.ArrowBack,
                 contentDescription = null,
@@ -176,7 +202,8 @@ fun SongInfo(song: Song) {
             song.title,
             fontSize = 26.sp,
             color = Color.White,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
 
         Spacer(Modifier.height(4.dp))
@@ -184,7 +211,8 @@ fun SongInfo(song: Song) {
         Text(
             song.artist,
             fontSize = 16.sp,
-            color = Color.White.copy(alpha = 0.7f)
+            color = Color.White.copy(alpha = 0.7f),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
 }
@@ -220,19 +248,16 @@ fun LyricsPreview() {
 }
 
 @Composable
-fun ProgressSection() {
-
-    var progress by remember { mutableFloatStateOf(0.3f) }
+fun ProgressSection(playerViewModel: PlayerViewModel) {
+    val currentPosition by playerViewModel.currentPosition.collectAsState()
+    val duration by playerViewModel.duration.collectAsState()
 
     Column {
 
-        Slider(
-            value = progress,
-            onValueChange = { progress = it },
-            colors = SliderDefaults.colors(
-                thumbColor = Color(0xFFD6F36A),
-                activeTrackColor = Color(0xFFD6F36A)
-            )
+        MusicSlider(
+            progress = currentPosition.toFloat() / duration,
+            onProgressChange = {
+            }
         )
 
         Row(
@@ -240,15 +265,24 @@ fun ProgressSection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            Text("0:28", color = Color.White.copy(alpha = 0.6f))
+            Text(formatDuration(currentPosition), color = Color.White.copy(alpha = 0.6f))
 
-            Text("-2:15", color = Color.White.copy(alpha = 0.6f))
+            Text(formatDuration(duration), color = Color.White.copy(alpha = 0.6f))
         }
     }
 }
 
+fun formatDuration(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return String.format(Locale.US, "%d:%02d", minutes, seconds)
+}
+
 @Composable
-fun PlayerControls() {
+fun PlayerControls(playerViewModel: PlayerViewModel) {
+
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -279,12 +313,17 @@ fun PlayerControls() {
             contentAlignment = Alignment.Center
         ) {
 
-            Icon(
-                Icons.Default.Pause,
-                contentDescription = null,
-                tint = Color.Black,
-                modifier = Modifier.size(36.dp)
-            )
+            IconButton(
+                onClick = { playerViewModel.onPlayPauseClick() }
+            ) {
+
+                Icon(
+                    imageVector =
+                        if (isPlaying) Icons.Default.Pause
+                        else Icons.Default.PlayArrow,
+                    contentDescription = null
+                )
+            }
         }
 
         IconButton(onClick = {}) {

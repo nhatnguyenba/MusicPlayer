@@ -2,23 +2,27 @@ package com.nhatnguyenba.musicplayer.presentation.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nhatnguyenba.musicplayer.presentation.components.GlassBottomBar
 import com.nhatnguyenba.musicplayer.presentation.components.Screen
@@ -43,19 +47,23 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(
-                scrim = Color.Transparent.toArgb(),
-                darkScrim = Color.Transparent.toArgb()
-            ),
-            navigationBarStyle = SystemBarStyle.light(
-                scrim = Color.Transparent.toArgb(),
-                darkScrim = Color.Transparent.toArgb()
-            )
-        )
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             MusicPlayerTheme {
+                val view = LocalView.current
+
+                SideEffect {
+                    val window = this.window ?: return@SideEffect
+                    val insetsController = WindowInsetsControllerCompat(window, view)
+
+                    insetsController.isAppearanceLightStatusBars = false
+                    insetsController.isAppearanceLightNavigationBars = false
+
+                    window.statusBarColor = Color.Transparent.toArgb()
+                    window.navigationBarColor = Color.Transparent.toArgb()
+                }
+
                 MusicApp()
             }
         }
@@ -69,6 +77,9 @@ fun MusicApp() {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val searchViewModel: SearchViewModel = hiltViewModel()
     val playerViewModel: PlayerViewModel = hiltViewModel()
+
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route
 
     Box(
         modifier = Modifier
@@ -98,23 +109,30 @@ fun MusicApp() {
             }
             composable(Screen.Library.route) { LibraryScreen() }
             composable(Screen.Profile.route) { ProfileScreen() }
-            composable(Screen.Playing.route) { PlayingScreen(playerViewModel = playerViewModel) }
+            composable(Screen.Playing.route) {
+                PlayingScreen(
+                    navController = navController,
+                    playerViewModel = playerViewModel
+                )
+            }
         }
 
-        GlassBottomBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(20.dp)
-                .clip(RoundedCornerShape(40.dp))
-                .hazeEffect(
-                    state = hazeState,
-                    style = HazeStyle(
-                        blurRadius = 20.dp,
-                        backgroundColor = Color.White.copy(alpha = 0.09f),
-                        tint = HazeTint(Color.White.copy(alpha = 0.2f))
-                    )
-                ),
-            navController
-        )
+        if (currentRoute != Screen.Playing.route) {
+            GlassBottomBar(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(20.dp)
+                    .clip(RoundedCornerShape(40.dp))
+                    .hazeEffect(
+                        state = hazeState,
+                        style = HazeStyle(
+                            blurRadius = 20.dp,
+                            backgroundColor = Color.White.copy(alpha = 0.09f),
+                            tint = HazeTint(Color.White.copy(alpha = 0.2f))
+                        )
+                    ),
+                navController
+            )
+        }
     }
 }

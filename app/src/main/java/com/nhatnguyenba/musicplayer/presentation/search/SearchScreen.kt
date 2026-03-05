@@ -34,9 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,10 +68,8 @@ fun SearchScreen(
 
     val state by searchViewModel.uiState.collectAsState()
 
-    var query by remember { mutableStateOf("") }
-    var selectedFilter by remember {
-        mutableStateOf(SearchFilter.SONGS)
-    }
+    val query by searchViewModel.currentQuery.collectAsState()
+    val selectedFilter by searchViewModel.currentFilter.collectAsState()
 
 //    LaunchedEffect(selectedFilter) {
 //        viewModel.onFilterChange(selectedFilter)
@@ -99,7 +94,6 @@ fun SearchScreen(
         SearchBar(
             query = query,
             onQueryChange = {
-                query = it
                 searchViewModel.onQueryChange(it)
             }
         )
@@ -112,7 +106,6 @@ fun SearchScreen(
                 filters = SearchFilter.entries.toList(),
                 selectedFilter = selectedFilter,
                 onFilterSelected = {
-                    selectedFilter = it
                     searchViewModel.onFilterChange(it)
                 },
                 label = { it.title },
