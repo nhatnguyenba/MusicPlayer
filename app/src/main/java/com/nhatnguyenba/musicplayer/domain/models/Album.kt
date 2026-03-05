@@ -1,7 +1,8 @@
 package com.nhatnguyenba.musicplayer.domain.models
 
-class Genre(
+class Album(
     val id: String,
-    val name: String,
+    val title: String,
+    val artist: String,
     val imageUrl: String
 )

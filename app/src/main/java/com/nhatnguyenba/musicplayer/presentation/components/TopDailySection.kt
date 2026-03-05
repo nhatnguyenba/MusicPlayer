@@ -1,12 +1,10 @@
 package com.nhatnguyenba.musicplayer.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,10 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontVariation.weight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.nhatnguyenba.musicplayer.presentation.home.HomeUiState
+import com.nhatnguyenba.musicplayer.domain.models.Playlist
+import com.nhatnguyenba.musicplayer.presentation.common.UiState
 import com.nhatnguyenba.musicplayer.presentation.home.HomeViewModel
 
 @Composable
@@ -55,7 +53,7 @@ fun TopDailySection(
 
         when (state) {
 
-            is HomeUiState.Loading -> {
+            is UiState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -65,17 +63,17 @@ fun TopDailySection(
                 }
             }
 
-            is HomeUiState.Success -> {
-                val playlists = (state as HomeUiState.Success).playlists
+            is UiState.Success -> {
+                val playlists = (state as UiState.Success<List<Playlist>>).data
                 repeat(playlists.size) { index ->
                     PlaylistItem(playlists[index])
                     Spacer(Modifier.height(16.dp))
                 }
             }
 
-            is HomeUiState.Error -> {
+            is UiState.Error -> {
                 Text(
-                    text = (state as HomeUiState.Error).message,
+                    text = (state as UiState.Error).message,
                     color = Color.Red
                 )
             }

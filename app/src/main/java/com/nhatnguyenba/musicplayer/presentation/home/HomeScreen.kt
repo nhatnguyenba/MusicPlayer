@@ -9,17 +9,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nhatnguyenba.musicplayer.presentation.components.CuratedSection
-import com.nhatnguyenba.musicplayer.presentation.components.FilterChipsSection
+import com.nhatnguyenba.musicplayer.presentation.components.FilterChipSection
 import com.nhatnguyenba.musicplayer.presentation.components.HeaderSection
 import com.nhatnguyenba.musicplayer.presentation.components.TopDailySection
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 
 
@@ -28,6 +31,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     hazeState: HazeState
 ) {
+    var selectedFilter by remember {
+        mutableStateOf(HomeFilter.ALL)
+    }
 
     Box(
         modifier = Modifier
@@ -57,7 +63,15 @@ fun HomeScreen(
 
             item { Spacer(Modifier.height(24.dp)) }
 
-            item { FilterChipsSection(chips = listOf("All", "New Release", "Trending", "Top")) }
+            item {
+                FilterChipSection(
+                    filters = HomeFilter.entries.toList(),
+                    selectedFilter = selectedFilter,
+                    onFilterSelected = { selectedFilter = it },
+                    label = { it.title },
+                    modifier = Modifier
+                )
+            }
 
             item { Spacer(Modifier.height(32.dp)) }
 
@@ -68,4 +82,11 @@ fun HomeScreen(
             item { TopDailySection(viewModel) }
         }
     }
+}
+
+enum class HomeFilter(val title: String) {
+    ALL("All"),
+    NEW("New Release"),
+    TRENDING("Trending"),
+    TOP("Top")
 }

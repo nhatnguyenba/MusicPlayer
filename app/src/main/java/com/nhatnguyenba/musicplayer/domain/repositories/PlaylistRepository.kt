@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
     fun getDailyPlaylists(): Flow<List<Playlist>>
+
+    fun searchPlaylists(keyword: String): Flow<List<Playlist>>
 }

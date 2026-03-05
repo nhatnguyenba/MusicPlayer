@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nhatnguyenba.musicplayer.domain.models.Playlist
 import com.nhatnguyenba.musicplayer.domain.usecases.GetDailyPlaylistUseCase
+import com.nhatnguyenba.musicplayer.presentation.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,23 +17,17 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getDailyPlaylistUseCase: GetDailyPlaylistUseCase
 ) : ViewModel() {
-    val uiState: StateFlow<HomeUiState> =
+    val uiState: StateFlow<UiState<List<Playlist>>> =
         getDailyPlaylistUseCase()
             .map { songs ->
-                HomeUiState.Success(songs)
+                UiState.Success(songs)
             }
             .catch { e ->
-                HomeUiState.Error(e.message ?: "Unknown error")
+                UiState.Error(e.message ?: "Unknown error")
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = HomeUiState.Loading
+                initialValue = UiState.Loading
             )
-}
-
-sealed class HomeUiState {
-    object Loading : HomeUiState()
-    data class Success(val playlists: List<Playlist>) : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
 }

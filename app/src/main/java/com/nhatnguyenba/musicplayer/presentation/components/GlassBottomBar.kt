@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LibraryMusic
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -86,6 +87,7 @@ sealed class Screen(
     object Search : Screen("search", Icons.Default.Search, "Search")
     object Library : Screen("library", Icons.Default.LibraryMusic, "Library")
     object Profile : Screen("profile", Icons.Default.Person, "Profile")
+    object Playing : Screen("playing", Icons.Default.PlayArrow, "Playing")
 }
 
 @Preview(showBackground = true)

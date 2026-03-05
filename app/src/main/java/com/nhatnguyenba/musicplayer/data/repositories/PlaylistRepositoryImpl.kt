@@ -19,4 +19,12 @@ class PlaylistRepositoryImpl @Inject constructor(
             }
         }
     }
+
+    override fun searchPlaylists(keyword: String): Flow<List<Playlist>> {
+        return deezerMusicService.searchPlaylists(keyword).toFlow().map {
+            it.data.map { playlistDto ->
+                playlistDto.toDomain()
+            }
+        }
+    }
 }

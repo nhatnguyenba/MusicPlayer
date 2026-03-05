@@ -1,6 +1,6 @@
 package com.nhatnguyenba.musicplayer.domain.models
 
-class Playlist (
+class Playlist(
     val id: String,
     val title: String,
     val author: String,

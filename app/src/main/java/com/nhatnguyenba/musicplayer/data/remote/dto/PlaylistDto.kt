@@ -2,7 +2,7 @@ package com.nhatnguyenba.musicplayer.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class DailyPlaylistsResponse(
+data class PlaylistsResponse(
     val data: List<PlaylistDto>,
     val total: Long,
 )

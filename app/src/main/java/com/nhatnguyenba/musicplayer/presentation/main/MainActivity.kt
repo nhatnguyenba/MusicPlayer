@@ -16,15 +16,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nhatnguyenba.musicplayer.presentation.components.GlassBottomBar
 import com.nhatnguyenba.musicplayer.presentation.components.Screen
 import com.nhatnguyenba.musicplayer.presentation.home.HomeScreen
+import com.nhatnguyenba.musicplayer.presentation.home.HomeViewModel
 import com.nhatnguyenba.musicplayer.presentation.library.LibraryScreen
+import com.nhatnguyenba.musicplayer.presentation.nowplaying.PlayerViewModel
+import com.nhatnguyenba.musicplayer.presentation.nowplaying.PlayingScreen
 import com.nhatnguyenba.musicplayer.presentation.profile.ProfileScreen
 import com.nhatnguyenba.musicplayer.presentation.search.SearchScreen
+import com.nhatnguyenba.musicplayer.presentation.search.SearchViewModel
 import com.nhatnguyenba.musicplayer.presentation.theme.MusicPlayerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.haze.HazeStyle
@@ -61,6 +66,9 @@ class MainActivity : ComponentActivity() {
 fun MusicApp() {
     val navController = rememberNavController()
     val hazeState = rememberHazeState()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val searchViewModel: SearchViewModel = hiltViewModel()
+    val playerViewModel: PlayerViewModel = hiltViewModel()
 
     Box(
         modifier = Modifier
@@ -75,10 +83,22 @@ fun MusicApp() {
                 .hazeSource(state = hazeState)
         ) {
 
-            composable(Screen.Home.route) { HomeScreen(hazeState = hazeState) }
-            composable(Screen.Search.route) { SearchScreen() }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    viewModel = homeViewModel,
+                    hazeState = hazeState
+                )
+            }
+            composable(Screen.Search.route) {
+                SearchScreen(
+                    playerViewModel = playerViewModel,
+                    searchViewModel = searchViewModel,
+                    navController = navController
+                )
+            }
             composable(Screen.Library.route) { LibraryScreen() }
             composable(Screen.Profile.route) { ProfileScreen() }
+            composable(Screen.Playing.route) { PlayingScreen(playerViewModel = playerViewModel) }
         }
 
         GlassBottomBar(
