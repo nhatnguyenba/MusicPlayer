@@ -1,4 +1,4 @@
-package com.nhatnguyenba.musicplayer
+package com.nhatnguyenba.musicplayer.service
 
 import android.util.Log
 import androidx.media3.exoplayer.ExoPlayer

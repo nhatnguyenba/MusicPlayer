@@ -5,7 +5,7 @@ import android.content.Context
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.google.common.util.concurrent.ListenableFuture
-import com.nhatnguyenba.musicplayer.PlaybackService
+import com.nhatnguyenba.musicplayer.service.PlaybackService
 import com.nhatnguyenba.musicplayer.data.player.PlayerManager
 import com.nhatnguyenba.musicplayer.data.repositories.PlayerRepositoryImpl
 import com.nhatnguyenba.musicplayer.domain.repositories.PlayerRepository

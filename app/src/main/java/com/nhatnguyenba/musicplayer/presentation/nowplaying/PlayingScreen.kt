@@ -45,7 +45,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nhatnguyenba.musicplayer.domain.models.Song
 import com.nhatnguyenba.musicplayer.presentation.components.MusicSlider
-import com.nhatnguyenba.musicplayer.presentation.components.Screen
+import com.nhatnguyenba.musicplayer.presentation.components.RotatingAlbumArt
 import java.util.Locale
 
 @Composable
@@ -55,6 +55,7 @@ fun PlayingScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
     val song by playerViewModel.currentSong.collectAsState()
+    val isPlaying by playerViewModel.isPlaying.collectAsState()
 
     song?.let {
         Box(modifier = modifier.fillMaxSize()) {
@@ -101,7 +102,7 @@ fun PlayingScreen(
                 }
 
                 item {
-                    Artwork(it.imageUrl)
+                    RotatingAlbumArt(imageUrl = it.imageUrl, isPlaying = isPlaying)
                 }
 
                 item {
@@ -150,7 +151,7 @@ fun TopBar(navController: NavController) {
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        IconButton(onClick = { navController.navigate(Screen.Search.route) }) {
+        IconButton(onClick = { navController.popBackStack() }) {
             Icon(
                 Icons.Default.ArrowBack,
                 contentDescription = null,
@@ -176,19 +177,6 @@ fun TopBar(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-fun Artwork(imageUrl: String) {
-
-    AsyncImage(
-        model = imageUrl,
-        contentDescription = null,
-        modifier = Modifier
-            .size(260.dp)
-            .clip(CircleShape),
-        contentScale = ContentScale.Crop
-    )
 }
 
 @Composable
