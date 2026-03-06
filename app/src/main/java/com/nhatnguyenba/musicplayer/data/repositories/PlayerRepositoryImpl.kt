@@ -1,6 +1,6 @@
 package com.nhatnguyenba.musicplayer.data.repositories
 
-import com.nhatnguyenba.musicplayer.data.player.PlayerManager
+import com.nhatnguyenba.musicplayer.data.manager.PlayerManager
 import com.nhatnguyenba.musicplayer.domain.repositories.PlayerRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

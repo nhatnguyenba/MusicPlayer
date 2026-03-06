@@ -1,5 +1,6 @@
 package com.nhatnguyenba.musicplayer.di
 
+import com.nhatnguyenba.musicplayer.data.manager.LocalSongManager
 import com.nhatnguyenba.musicplayer.data.remote.api.DeezerMusicService
 import com.nhatnguyenba.musicplayer.data.repositories.AlbumRepositoryImpl
 import com.nhatnguyenba.musicplayer.data.repositories.ArtistRepositoryImpl
@@ -35,8 +36,9 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideSongRepository(
-        deezerMusicService: DeezerMusicService
-    ): SongRepository = SongRepositoryImpl(deezerMusicService)
+        deezerMusicService: DeezerMusicService,
+        localSongManager: LocalSongManager
+    ): SongRepository = SongRepositoryImpl(deezerMusicService, localSongManager)
 
     @Provides
     @Singleton

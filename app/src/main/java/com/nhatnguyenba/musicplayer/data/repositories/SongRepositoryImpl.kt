@@ -1,5 +1,6 @@
 package com.nhatnguyenba.musicplayer.data.repositories
 
+import com.nhatnguyenba.musicplayer.data.manager.LocalSongManager
 import com.nhatnguyenba.musicplayer.data.mapper.toDomain
 import com.nhatnguyenba.musicplayer.data.mapper.toFlow
 import com.nhatnguyenba.musicplayer.data.remote.api.DeezerMusicService
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SongRepositoryImpl @Inject constructor(
-    private val deezerMusicService: DeezerMusicService
+    private val deezerMusicService: DeezerMusicService,
+    private val localSongManager: LocalSongManager
 ) : SongRepository {
     override fun searchSongs(keyword: String): Flow<List<Song>> {
         return deezerMusicService.searchTracks(keyword).toFlow().map {
@@ -18,5 +20,9 @@ class SongRepositoryImpl @Inject constructor(
                 trackDto.toDomain()
             }
         }
+    }
+
+    override fun getLocalSongs(): Flow<List<Song>> {
+        return localSongManager.getAllSongs()
     }
 }

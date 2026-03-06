@@ -1,5 +1,6 @@
-package com.nhatnguyenba.musicplayer.data.player
+package com.nhatnguyenba.musicplayer.data.manager
 
+import android.net.Uri
 import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.net.toUri
 
 @Singleton
 class PlayerManager @Inject constructor(
@@ -35,7 +37,7 @@ class PlayerManager @Inject constructor(
     }
 
     fun play(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
+        val mediaItem = MediaItem.fromUri(url.toUri())
         controller?.setMediaItem(mediaItem)
         controller?.prepare()
         controller?.play()

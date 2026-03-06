@@ -1,8 +1,13 @@
 package com.nhatnguyenba.musicplayer.presentation.main
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +35,7 @@ import com.nhatnguyenba.musicplayer.presentation.components.Screen
 import com.nhatnguyenba.musicplayer.presentation.home.HomeScreen
 import com.nhatnguyenba.musicplayer.presentation.home.HomeViewModel
 import com.nhatnguyenba.musicplayer.presentation.library.LibraryScreen
+import com.nhatnguyenba.musicplayer.presentation.library.LibraryViewModel
 import com.nhatnguyenba.musicplayer.presentation.nowplaying.PlayerViewModel
 import com.nhatnguyenba.musicplayer.presentation.nowplaying.PlayingScreen
 import com.nhatnguyenba.musicplayer.presentation.profile.ProfileScreen
@@ -49,6 +56,8 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+        checkPermissionAndFetch()
+
         setContent {
             MusicPlayerTheme {
                 val view = LocalView.current
@@ -68,6 +77,36 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        Log.d("NHAT", "Permission isGranted: $isGranted")
+        if (!isGranted) {
+            checkPermissionAndFetch()
+        }
+    }
+
+    private fun checkPermissionAndFetch() {
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_AUDIO
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
+
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Log.d("NHAT", "Permission Granted")
+            }
+
+            else -> {
+                requestPermissionLauncher.launch(permission)
+            }
+        }
+    }
 }
 
 @Composable
@@ -77,6 +116,7 @@ fun MusicApp() {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val searchViewModel: SearchViewModel = hiltViewModel()
     val playerViewModel: PlayerViewModel = hiltViewModel()
+    val libraryViewModel: LibraryViewModel = hiltViewModel()
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -107,7 +147,13 @@ fun MusicApp() {
                     navController = navController
                 )
             }
-            composable(Screen.Library.route) { LibraryScreen() }
+            composable(Screen.Library.route) {
+                LibraryScreen(
+                    libraryViewModel = libraryViewModel,
+                    playerViewModel = playerViewModel,
+                    navController = navController
+                )
+            }
             composable(Screen.Profile.route) { ProfileScreen() }
             composable(Screen.Playing.route) {
                 PlayingScreen(

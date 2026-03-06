@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SongRepository {
     fun searchSongs(keyword: String): Flow<List<Song>>
+
+    fun getLocalSongs(): Flow<List<Song>>
 }
