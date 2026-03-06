@@ -239,12 +239,14 @@ fun LyricsPreview() {
 fun ProgressSection(playerViewModel: PlayerViewModel) {
     val currentPosition by playerViewModel.currentPosition.collectAsState()
     val duration by playerViewModel.duration.collectAsState()
+    val progress by playerViewModel.progress.collectAsState()
 
     Column {
 
         MusicSlider(
-            progress = currentPosition.toFloat() / duration,
-            onProgressChange = {
+            progress = progress,
+            onSeek = {
+                playerViewModel.seekTo(it)
             }
         )
 

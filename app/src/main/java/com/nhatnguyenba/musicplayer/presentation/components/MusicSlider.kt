@@ -2,12 +2,14 @@ package com.nhatnguyenba.musicplayer.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,7 +25,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MusicSlider(
     progress: Float, // 0f -> 1f
-    onProgressChange: (Float) -> Unit,
+    onSeek: (Float) -> Unit,
     modifier: Modifier = Modifier,
     trackHeight: Dp = 4.dp,
     thumbRadius: Dp = 8.dp,
@@ -33,14 +35,46 @@ fun MusicSlider(
 
     var sliderWidth by remember { mutableStateOf(0f) }
 
+    var isDragging by remember { mutableStateOf(false) }
+    var dragProgress by remember { mutableFloatStateOf(progress) }
+
+    val displayedProgress = if (isDragging) dragProgress else progress
+
     Box(
         modifier = modifier
             .height(32.dp)
             .fillMaxWidth()
             .pointerInput(Unit) {
-                detectDragGestures { change, _ ->
+
+                detectTapGestures { offset ->
+
+                    val x = offset.x.coerceIn(0f, sliderWidth)
+                    val newProgress = x / sliderWidth
+
+                    onSeek(newProgress)
+                }
+            }
+            .pointerInput(Unit) {
+
+                detectDragGestures(
+
+                    onDragStart = {
+                        isDragging = true
+                    },
+
+                    onDragEnd = {
+                        isDragging = false
+                        onSeek(dragProgress)
+                    },
+
+                    onDragCancel = {
+                        isDragging = false
+                    }
+
+                ) { change, _ ->
+
                     val x = change.position.x.coerceIn(0f, sliderWidth)
-                    onProgressChange(x / sliderWidth)
+                    dragProgress = x / sliderWidth
                 }
             }
     ) {
@@ -54,7 +88,7 @@ fun MusicSlider(
         ) {
 
             val trackY = size.height / 2
-            val progressX = sliderWidth * progress
+            val progressX = sliderWidth * displayedProgress
 
             // inactive track
             drawLine(
