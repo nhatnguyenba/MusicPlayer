@@ -1,6 +1,8 @@
 # Music Player App 🎵
 
-**Music Player** là ứng dụng nghe nhạc hiện đại dành cho Android, được xây dựng với Material Design 3 và Jetpack Compose. Giao diện lấy cảm hứng từ các ứng dụng nghe nhạc phổ biến, tập trung vào trải nghiệm khám phá và phát nhạc mượt mà.
+**Music Player** là ứng dụng nghe nhạc hiện đại dành cho Android, được xây dựng với Material Design
+3 và Jetpack Compose. Giao diện lấy cảm hứng từ các ứng dụng nghe nhạc phổ biến, tập trung vào trải
+nghiệm khám phá và phát nhạc mượt mà.
 
 ## Tính năng nổi bật
 
@@ -12,6 +14,14 @@
 
 ## Screenshots & Video
 
+<img src="screenshots/music-player-demo.gif" width="400"/> 
+
+| Screen         | Image 1                                                 | Image 2                                                     | Image 3                                                       | Image 4                                                      | Image 5                                                         |
+|----------------|---------------------------------------------------------|-------------------------------------------------------------|---------------------------------------------------------------|--------------------------------------------------------------|-----------------------------------------------------------------|
+| Home Screen    | <img src="screenshots/home_screen.png" width="300"/>    |                                                             |                                                               |                                                              |                                                                 |
+| Search Screen  | <img src="screenshots/search_screen.png" width="300"/>  | <img src="screenshots/search_screen_song.png" width="300"/> | <img src="screenshots/search_screen_artist.png" width="300"/> | <img src="screenshots/search_screen_album.png" width="300"/> | <img src="screenshots/search_screen_playlist.png" width="300"/> |
+| Library Screen | <img src="screenshots/library_screen.png" width="300"/> |                                                             |                                                               |                                                              |                                                                 |                                                                 |
+| Player Screen  | <img src="screenshots/player_screen.png" width="300"/>  |                                                             |                                                               |                                                              |                                                                 |                                                                 |
 
 ## Công nghệ sử dụng
 
