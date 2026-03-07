@@ -1,6 +1,7 @@
 package com.nhatnguyenba.musicplayer.data.repositories
 
 import com.nhatnguyenba.musicplayer.data.manager.PlayerManager
+import com.nhatnguyenba.musicplayer.domain.models.Song
 import com.nhatnguyenba.musicplayer.domain.repositories.PlayerRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -9,8 +10,8 @@ class PlayerRepositoryImpl @Inject constructor(
     private val playerManager: PlayerManager
 ) : PlayerRepository {
 
-    override fun play(url: String) {
-        playerManager.play(url)
+    override fun play(song: Song) {
+        playerManager.play(song)
     }
 
     override fun pause() {

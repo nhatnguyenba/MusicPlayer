@@ -1,10 +1,11 @@
 package com.nhatnguyenba.musicplayer.domain.repositories
 
+import com.nhatnguyenba.musicplayer.domain.models.Song
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerRepository {
 
-    fun play(url: String)
+    fun play(song: Song)
 
     fun pause()
 

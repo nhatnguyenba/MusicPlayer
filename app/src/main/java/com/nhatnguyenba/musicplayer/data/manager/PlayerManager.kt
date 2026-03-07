@@ -1,13 +1,15 @@
 package com.nhatnguyenba.musicplayer.data.manager
 
-import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import com.nhatnguyenba.musicplayer.domain.models.Song
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
@@ -18,7 +20,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.net.toUri
 
 @Singleton
 class PlayerManager @Inject constructor(
@@ -36,8 +37,18 @@ class PlayerManager @Inject constructor(
         )
     }
 
-    fun play(url: String) {
-        val mediaItem = MediaItem.fromUri(url.toUri())
+    fun play(song: Song) {
+        val mediaItem = MediaItem.Builder()
+            .setUri(song.playBackUrl.toUri())
+            .setMediaId(song.id)
+            .setMediaMetadata(
+                MediaMetadata.Builder()
+                    .setTitle(song.title)
+                    .setArtist(song.artist)
+                    .setArtworkUri(song.imageUrl.toUri())
+                    .build()
+            )
+            .build()
         controller?.setMediaItem(mediaItem)
         controller?.prepare()
         controller?.play()
@@ -76,11 +87,11 @@ class PlayerManager @Inject constructor(
         }
     }
 
-    fun observeCurrentPosition(): Flow<Long> =  flow {
+    fun observeCurrentPosition(): Flow<Long> = flow {
         while (currentCoroutineContext().isActive) {
             emit(controller?.currentPosition ?: 0L)
             delay(500)
-            Log.d("NHAT", "currentPosition: "+ controller?.currentPosition)
+            Log.d("NHAT", "currentPosition: " + controller?.currentPosition)
         }
     }.distinctUntilChanged()
 

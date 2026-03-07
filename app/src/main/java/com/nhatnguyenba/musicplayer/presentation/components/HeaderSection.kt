@@ -33,7 +33,7 @@ fun HeaderSection() {
         Row(verticalAlignment = Alignment.CenterVertically) {
 
             AsyncImage(
-                model = "https://i.pravatar.cc/150?img=5",
+                model = "https://i.ibb.co/VYNmGCCZ/profile2.jpg",
                 contentDescription = null,
                 modifier = Modifier
                     .size(48.dp)

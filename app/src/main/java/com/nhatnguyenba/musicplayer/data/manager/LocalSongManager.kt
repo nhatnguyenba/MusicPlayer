@@ -27,7 +27,8 @@ class LocalSongManager(
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.DURATION
+            MediaStore.Audio.Media.DURATION,
+            MediaStore.Audio.Media.DATE_ADDED
         )
 
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
@@ -37,7 +38,7 @@ class LocalSongManager(
             projection,
             selection,
             null,
-            "${MediaStore.Audio.Media.TITLE} ASC"
+            "${MediaStore.Audio.Media.DATE_ADDED} DESC"
         )
 
         query?.use { cursor ->

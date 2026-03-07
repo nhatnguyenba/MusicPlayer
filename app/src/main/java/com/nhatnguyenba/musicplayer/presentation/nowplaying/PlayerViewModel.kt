@@ -35,7 +35,7 @@ class PlayerViewModel @Inject constructor(
 
     fun playSong(song: Song) {
         _currentSong.value = song
-        playSongUseCase(song.playBackUrl)
+        playSongUseCase(song)
     }
 
     fun pause() {
