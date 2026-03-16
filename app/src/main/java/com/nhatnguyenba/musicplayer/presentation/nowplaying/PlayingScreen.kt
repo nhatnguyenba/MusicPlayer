@@ -28,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nhatnguyenba.musicplayer.domain.models.Song
@@ -54,8 +54,8 @@ fun PlayingScreen(
     modifier: Modifier = Modifier,
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
-    val song by playerViewModel.currentSong.collectAsState()
-    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val song by playerViewModel.currentSong.collectAsStateWithLifecycle()
+    val isPlaying by playerViewModel.isPlaying.collectAsStateWithLifecycle()
 
     song?.let {
         Box(modifier = modifier.fillMaxSize()) {
@@ -237,9 +237,9 @@ fun LyricsPreview() {
 
 @Composable
 fun ProgressSection(playerViewModel: PlayerViewModel) {
-    val currentPosition by playerViewModel.currentPosition.collectAsState()
-    val duration by playerViewModel.duration.collectAsState()
-    val progress by playerViewModel.progress.collectAsState()
+    val currentPosition by playerViewModel.currentPosition.collectAsStateWithLifecycle()
+    val duration by playerViewModel.duration.collectAsStateWithLifecycle()
+    val progress by playerViewModel.progress.collectAsStateWithLifecycle()
 
     Column {
 
@@ -272,7 +272,7 @@ fun formatDuration(ms: Long): String {
 @Composable
 fun PlayerControls(playerViewModel: PlayerViewModel) {
 
-    val isPlaying by playerViewModel.isPlaying.collectAsState()
+    val isPlaying by playerViewModel.isPlaying.collectAsStateWithLifecycle()
 
     Row(
         modifier = Modifier.fillMaxWidth(),

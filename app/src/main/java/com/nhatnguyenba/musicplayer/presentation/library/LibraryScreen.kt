@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nhatnguyenba.musicplayer.R
@@ -152,7 +153,7 @@ fun LibraryList(
     navController: NavController,
     modifier: Modifier
 ) {
-    val uiState by libraryViewModel.uiState.collectAsState()
+    val uiState by libraryViewModel.uiState.collectAsStateWithLifecycle()
 
     LazyColumn(modifier = modifier) {
 

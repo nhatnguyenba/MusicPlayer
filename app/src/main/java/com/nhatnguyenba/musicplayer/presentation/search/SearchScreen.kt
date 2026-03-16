@@ -32,7 +32,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.nhatnguyenba.musicplayer.domain.models.Album
@@ -66,10 +66,10 @@ fun SearchScreen(
     navController: NavController
 ) {
 
-    val state by searchViewModel.uiState.collectAsState()
+    val state by searchViewModel.uiState.collectAsStateWithLifecycle()
 
-    val query by searchViewModel.currentQuery.collectAsState()
-    val selectedFilter by searchViewModel.currentFilter.collectAsState()
+    val query by searchViewModel.currentQuery.collectAsStateWithLifecycle()
+    val selectedFilter by searchViewModel.currentFilter.collectAsStateWithLifecycle()
 
 //    LaunchedEffect(selectedFilter) {
 //        viewModel.onFilterChange(selectedFilter)

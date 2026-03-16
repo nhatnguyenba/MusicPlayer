@@ -14,9 +14,7 @@ import com.nhatnguyenba.musicplayer.domain.usecases.SearchPlaylistsUseCase
 import com.nhatnguyenba.musicplayer.domain.usecases.SearchSongsUseCase
 import com.nhatnguyenba.musicplayer.presentation.common.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -45,7 +43,7 @@ class SearchViewModel @Inject constructor(
         MutableStateFlow(SearchFilter.SONGS)
     val currentFilter: StateFlow<SearchFilter> = _currentFilter
 
-    private var scope = CoroutineScope(Dispatchers.IO)
+    private var job: Job? = null
 
     init {
         loadGenres()
@@ -70,63 +68,57 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun loadGenres() {
-        scope.cancel()
-        scope = CoroutineScope(Dispatchers.IO)
-        viewModelScope.launch {
-            scope.launch {
-                getAllGenresUseCase()
-                    .onStart { _uiState.value = UiState.Loading }
-                    .catch { e ->
-                        _uiState.value = UiState.Error(e.message ?: "Error")
-                    }
-                    .collect { genres ->
-                        _uiState.value =
-                            UiState.Success(SearchResult.Genres(genres))
-                    }
-            }
+        job?.cancel()
+        job = viewModelScope.launch {
+            getAllGenresUseCase()
+                .onStart { _uiState.value = UiState.Loading }
+                .catch { e ->
+                    _uiState.value = UiState.Error(e.message ?: "Error")
+                }
+                .collect { genres ->
+                    _uiState.value =
+                        UiState.Success(SearchResult.Genres(genres))
+                }
         }
     }
 
     private fun search(query: String) {
-        scope.cancel()
-        scope = CoroutineScope(Dispatchers.IO)
-        viewModelScope.launch {
-            scope.launch {
-                _uiState.value = UiState.Loading
+        job?.cancel()
+        job = viewModelScope.launch {
+            _uiState.value = UiState.Loading
 
-                when (currentFilter.value) {
+            when (currentFilter.value) {
 
-                    SearchFilter.SONGS -> {
-                        searchSongsUseCase(query).collect { songs ->
-                            _uiState.value =
-                                UiState.Success(SearchResult.Songs(songs))
-                        }
+                SearchFilter.SONGS -> {
+                    searchSongsUseCase(query).collect { songs ->
+                        _uiState.value =
+                            UiState.Success(SearchResult.Songs(songs))
                     }
+                }
 
-                    SearchFilter.ARTISTS -> {
-                        searchArtistsUseCase(query).collect { artists ->
-                            _uiState.value =
-                                UiState.Success(SearchResult.Artists(artists))
-                        }
+                SearchFilter.ARTISTS -> {
+                    searchArtistsUseCase(query).collect { artists ->
+                        _uiState.value =
+                            UiState.Success(SearchResult.Artists(artists))
                     }
+                }
 
-                    SearchFilter.ALBUMS -> {
-                        searchAlbumsUseCase(query).collect { albums ->
-                            _uiState.value =
-                                UiState.Success(SearchResult.Albums(albums))
-                        }
+                SearchFilter.ALBUMS -> {
+                    searchAlbumsUseCase(query).collect { albums ->
+                        _uiState.value =
+                            UiState.Success(SearchResult.Albums(albums))
                     }
+                }
 
-                    SearchFilter.PLAYLISTS -> {
-                        searchPlaylistsUseCase(query).collect { playlists ->
-                            _uiState.value =
-                                UiState.Success(SearchResult.Playlists(playlists))
-                        }
+                SearchFilter.PLAYLISTS -> {
+                    searchPlaylistsUseCase(query).collect { playlists ->
+                        _uiState.value =
+                            UiState.Success(SearchResult.Playlists(playlists))
                     }
+                }
 
-                    SearchFilter.PODCASTS -> {
+                SearchFilter.PODCASTS -> {
 
-                    }
                 }
             }
         }

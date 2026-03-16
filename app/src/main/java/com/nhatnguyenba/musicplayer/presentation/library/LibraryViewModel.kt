@@ -6,9 +6,7 @@ import com.nhatnguyenba.musicplayer.domain.usecases.GetLocalSongsUseCase
 import com.nhatnguyenba.musicplayer.presentation.common.UiState
 import com.nhatnguyenba.musicplayer.presentation.search.SearchResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,7 +25,7 @@ class LibraryViewModel @Inject constructor(
         MutableStateFlow(LibraryFilter.DOWNLOADED)
     val currentFilter: StateFlow<LibraryFilter> = _currentFilter
 
-    private var scope = CoroutineScope(Dispatchers.IO)
+    private var job: Job? = null
 
     init {
         loadLibraryData()
@@ -42,13 +40,10 @@ class LibraryViewModel @Inject constructor(
     private fun loadLibraryData() {
         when (currentFilter.value) {
             LibraryFilter.DOWNLOADED -> {
-                scope.cancel()
-                scope = CoroutineScope(Dispatchers.IO)
-                viewModelScope.launch {
-                    scope.launch {
-                        getLocalSongsUseCase().collect {
-                            _uiState.value = UiState.Success(SearchResult.Songs(it))
-                        }
+                job?.cancel()
+                job = viewModelScope.launch {
+                    getLocalSongsUseCase().collect {
+                        _uiState.value = UiState.Success(SearchResult.Songs(it))
                     }
                 }
             }
